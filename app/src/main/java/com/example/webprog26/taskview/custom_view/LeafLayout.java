@@ -1,5 +1,6 @@
 package com.example.webprog26.taskview.custom_view;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -13,20 +14,27 @@ import android.widget.RelativeLayout;
 public class LeafLayout extends RelativeLayout {
 
     private static final String TAG = "LeafLayout";
+//    private LayoutTransition mLayoutTransition;
 
     public LeafLayout(Context context) {
         super(context);
+        initClickListeners();
+//        initTransitions();
     }
 
     public LeafLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initClickListeners();
+//        initTransitions();
     }
 
     public LeafLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initClickListeners();
+//        initTransitions();
     }
 
-    private void init(){
+    private void initClickListeners(){
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,4 +56,9 @@ public class LeafLayout extends RelativeLayout {
             }
         });
     }
+
+//    private void initTransitions(){
+//        mLayoutTransition = LeafLayout.this.getLayoutTransition();
+//        mLayoutTransition.enableTransitionType(LayoutTransition.APPEARING);
+//    }
 }

@@ -16,6 +16,7 @@ public class ViewColorChanger extends Thread {
 
     OnColorChangeCallback mCallback;
 
+    private static final long CHANGE_COLOR_INTERVAL_IN_SECONDS = 2;
     private int[] colors = {Color.BLACK, Color.BLUE, Color.CYAN, Color.GRAY, Color.GREEN, Color.MAGENTA, Color.RED, Color.YELLOW};
 
     private Random mRandom;
@@ -31,7 +32,7 @@ public class ViewColorChanger extends Thread {
         super.run();
         while (!mShouldStop){
             try {
-                TimeUnit.SECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(CHANGE_COLOR_INTERVAL_IN_SECONDS);
                 mCallback.onColorChange(colors[mRandom.nextInt(colors.length)]);
             } catch (InterruptedException ie){
                 ie.printStackTrace();

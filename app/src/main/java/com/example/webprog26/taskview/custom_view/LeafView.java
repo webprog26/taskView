@@ -7,11 +7,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.example.webprog26.taskview.R;
 import com.example.webprog26.taskview.interfaces.OnColorChangeCallback;
+import com.example.webprog26.taskview.threads.ViewColorChanger;
 
 /**
  * Created by webprog26 on 07.12.2016.
@@ -20,18 +23,40 @@ import com.example.webprog26.taskview.interfaces.OnColorChangeCallback;
 public class LeafView extends View implements OnColorChangeCallback{
 
 
+    private static final String SUPER_STATE = "super_state";
+    private static final String CURRENT_COLOR = "current_color";
+
     private int mStartBackgroundColor;
     private Paint mPaint;
 
     private int shapeWidth = 100;
     private int shapeHeight = 100;
 
+    private ViewColorChanger mViewColorChanger;
+
     public LeafView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initAttrs(attrs);
         setupPaint();
+        mViewColorChanger = new ViewColorChanger(this);
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mViewColorChanger.start();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if(mViewColorChanger != null){
+            if(mViewColorChanger.isAlive()){
+                mViewColorChanger.setShouldStop(!mViewColorChanger.isShouldStop());
+                mViewColorChanger.interrupt();
+            }
+        }
+    }
 
     private void initAttrs(AttributeSet attrs){
         TypedArray typedArray = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.LeafView, 0, 0);
@@ -49,11 +74,11 @@ public class LeafView extends View implements OnColorChangeCallback{
         mPaint.setStyle(Paint.Style.FILL);
     }
 
-    public int getStartBackgroundColor() {
+    public synchronized int getStartBackgroundColor() {
         return mStartBackgroundColor;
     }
 
-    public void setStartBackgroundColor(int startBackgroundColor) {
+    public synchronized void setStartBackgroundColor(int startBackgroundColor) {
         this.mStartBackgroundColor = startBackgroundColor;
         invalidate();
         requestLayout();
@@ -92,7 +117,31 @@ public class LeafView extends View implements OnColorChangeCallback{
     }
 
     @Override
-    public void onColorChange(int color) {
-        setStartBackgroundColor(color);
+    public void onColorChange(final int color) {
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                setStartBackgroundColor(color);
+            }
+        });
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SUPER_STATE, super.onSaveInstanceState());
+        bundle.putInt(CURRENT_COLOR, getStartBackgroundColor());
+
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if(state instanceof Bundle){
+            Bundle bundle = (Bundle) state;
+            setStartBackgroundColor(bundle.getInt(CURRENT_COLOR));
+            state = bundle.getParcelable(SUPER_STATE);
+        }
+        super.onRestoreInstanceState(state);
     }
 }
