@@ -17,4 +17,33 @@
         android:id="@+id/leafView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:text="@string/text_view"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/black"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button"
+        android:text="@string/button"
+        android:layout_below="@+id/leafView"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_toRightOf="@+id/button"
+        android:layout_alignBottom="@+id/button"
+        android:hint="@string/edit_text"
+        android:layout_below="@+id/textView"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_toRightOf="@+id/editText"
+        android:layout_below="@+id/textView"
+        android:src="@mipmap/ic_launcher"/>
 </com.example.webprog26.taskview.custom_view.LeafLayout>
