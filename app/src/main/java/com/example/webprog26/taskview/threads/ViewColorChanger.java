@@ -1,7 +1,6 @@
 package com.example.webprog26.taskview.threads;
 
 import android.graphics.Color;
-import android.view.View;
 
 import com.example.webprog26.taskview.interfaces.OnColorChangeCallback;
 

@@ -6,5 +6,5 @@ package com.example.webprog26.taskview.interfaces;
 
 public interface OnColorChangeCallback {
 
-    public void onColorChange(int color);
+    void onColorChange(int color);
 }

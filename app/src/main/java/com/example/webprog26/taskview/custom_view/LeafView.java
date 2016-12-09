@@ -23,14 +23,19 @@ import com.example.webprog26.taskview.threads.ViewColorChanger;
 public class LeafView extends View implements OnColorChangeCallback{
 
 
+    private static final int DEFAULT_WIDTH = 100;
+    private static final int DEFAULT_HEIGHT = 100;
+
     private static final String SUPER_STATE = "super_state";
     private static final String CURRENT_COLOR = "current_color";
 
     private int mStartBackgroundColor;
     private Paint mPaint;
 
-    private int shapeWidth = 100;
-    private int shapeHeight = 100;
+
+
+    private int shapeWidth = DEFAULT_WIDTH;
+    private int shapeHeight = DEFAULT_HEIGHT;
 
     private ViewColorChanger mViewColorChanger;
 
