@@ -1,11 +1,15 @@
 package com.example.webprog26.taskview.custom_view;
 
-import android.animation.LayoutTransition;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.RelativeLayout;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by webprog26 on 08.12.2016.
@@ -14,34 +18,47 @@ import android.widget.RelativeLayout;
 public class LeafLayout extends RelativeLayout {
 
     private static final String TAG = "LeafLayout";
-//    private LayoutTransition mLayoutTransition;
+    private Map<Integer, Float> mYCoordinatesMap;
+    private boolean isDownward = false;
 
     public LeafLayout(Context context) {
         super(context);
-        initClickListeners();
-//        initTransitions();
+        init();
     }
 
     public LeafLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initClickListeners();
-//        initTransitions();
+        init();
     }
 
     public LeafLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initClickListeners();
-//        initTransitions();
+        init();
     }
 
-    private void initClickListeners(){
+    private void init(){
+        mYCoordinatesMap = new HashMap<>();
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "onClick(View view)");
-                for(int i = 0; i < LeafLayout.this.getChildCount(); i++){
-                    getChildAt(i).setVisibility(GONE);
+                if(isDownward){
+                    return;
                 }
+                ObjectAnimator animator;
+                int layoutHeight = LeafLayout.this.getHeight();
+                int layoutPaddingBottom = LeafLayout.this.getPaddingBottom();
+                for(int i = 0; i < LeafLayout.this.getChildCount(); i++){
+                    View viewToAnimate = getChildAt(i);
+                    int viewToAnimateHeight = viewToAnimate.getHeight();
+                    float viewToAnimateY = viewToAnimate.getY();
+                    mYCoordinatesMap.put(viewToAnimate.getId(), viewToAnimateY);
+                    animator = ObjectAnimator.ofFloat(viewToAnimate, "y", viewToAnimateY, layoutHeight - (viewToAnimateHeight + layoutPaddingBottom));
+                    animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                    animator.setDuration(4000);
+                    animator.start();
+                }
+            isDownward = true;
             }
         });
 
@@ -49,16 +66,20 @@ public class LeafLayout extends RelativeLayout {
             @Override
             public boolean onLongClick(View view) {
                 Log.i(TAG, "onLongClick(View view)");
-                for(int i = 0; i < LeafLayout.this.getChildCount(); i++){
-                    getChildAt(i).setVisibility(VISIBLE);
+                if(!isDownward){
+                    return false;
                 }
+                ObjectAnimator animator;
+                for(int i = 0; i < LeafLayout.this.getChildCount(); i++){
+                    View viewToAnimate = getChildAt(i);
+                    animator = ObjectAnimator.ofFloat(viewToAnimate, "y", viewToAnimate.getY(), mYCoordinatesMap.get(viewToAnimate.getId()));
+                    animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                    animator.setDuration(4000);
+                    animator.start();
+                }
+                isDownward = false;
                 return true;
             }
         });
     }
-
-//    private void initTransitions(){
-//        mLayoutTransition = LeafLayout.this.getLayoutTransition();
-//        mLayoutTransition.enableTransitionType(LayoutTransition.APPEARING);
-//    }
 }
